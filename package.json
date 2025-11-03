@@ -1,0 +1,23 @@
+{
+  "name": "manual",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "quiz": "bun --hot src/server.ts",
+    "dev": "bun --hot src/server.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.26",
+    "ai": "^5.0.86",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "turndown": "^7.2.2"
+  }
+}

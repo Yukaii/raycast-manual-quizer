@@ -1,0 +1,3 @@
+## FAQ
+
+‣**Where can I find my referral codes?**‣**I don't see the list of my referral codes. Why?**‣**Can more than one user use my referral code?**‣**Who can use my referral code?**‣**Is there a limit on referral codes?**‣**What do my friends get if they sign up using my referral code?**‣**What will I get if my friend signs up using my referral code?**‣**When will I receive my reward?**‣**How can I check the status of referral codes?**
