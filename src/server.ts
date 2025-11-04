@@ -12,8 +12,9 @@ function requireAuth(req: Request): Response | null {
   const requiredUsername = process.env.AUTH_USERNAME;
   const requiredPassword = process.env.AUTH_PASSWORD;
 
-  // Skip auth in production when REDIS_URL is configured (relies on Redis cost limiting instead)
-  if (process.env.REDIS_URL) {
+  // Skip auth in production when Redis is configured (relies on Redis cost limiting instead)
+  // Check for any Redis configuration
+  if (process.env.REDIS_URL || process.env.REDIS_URI || process.env.REDIS_CONNECTION_STRING || process.env.REDIS_HOST) {
     return null;
   }
 

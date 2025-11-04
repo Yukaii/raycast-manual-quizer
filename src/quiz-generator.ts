@@ -60,8 +60,9 @@ export async function generateQuiz(config: QuizConfig): Promise<Quiz> {
   const prompt = buildQuizPrompt(contentText, config);
 
   // Call Gemini API using Vercel AI SDK
+  // Using Gemini 2.5 Flash for better quality results
   const { text, usage } = await generateText({
-    model: google("gemini-2.0-flash-exp"),
+    model: google("gemini-2.5-flash"),
     prompt,
     maxTokens: 8192,
   });

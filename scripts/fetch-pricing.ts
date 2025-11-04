@@ -30,6 +30,10 @@ async function fetchPricing() {
 
     // Extract Gemini models we care about
     const geminiModels = [
+      "gemini-2.5-flash",
+      "gemini/gemini-2.5-flash",
+      "gemini-2.5-pro",
+      "gemini/gemini-2.5-pro",
       "gemini-2.0-flash-exp",
       "gemini/gemini-2.0-flash-exp",
       "gemini-1.5-flash",
@@ -81,6 +85,16 @@ async function fetchPricing() {
       source: "Fallback pricing (manual)",
       updated: new Date().toISOString().split('T')[0],
       models: {
+        "gemini-2.5-flash": {
+          name: "Gemini 2.5 Flash",
+          inputCostPerToken: 3e-7,
+          outputCostPerToken: 2.5e-6
+        },
+        "gemini-2.5-pro": {
+          name: "Gemini 2.5 Pro",
+          inputCostPerToken: 1.25e-6,
+          outputCostPerToken: 1e-5
+        },
         "gemini-2.0-flash-exp": {
           name: "Gemini 2.0 Flash (Experimental)",
           inputCostPerToken: 0,

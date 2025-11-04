@@ -23,7 +23,7 @@ The HTML fetcher and cleanup utilities were developed using Raycast AI with Sonn
 
 ## Features
 
-- 🤖 **AI-Powered Question Generation** - Uses Google Gemini AI (Sonnet 4.5) to create contextual questions
+- 🤖 **AI-Powered Question Generation** - Uses Google Gemini 2.5 Flash to create high-quality contextual questions
 - 🌏 **Bilingual Support** - Full English and Traditional Chinese interface
 - 📝 **Multiple Question Types** - Multiple choice, true/false, and short answer questions
 - 🎯 **Difficulty Levels** - Choose from easy, medium, or hard questions
@@ -44,7 +44,7 @@ The HTML fetcher and cleanup utilities were developed using Raycast AI with Sonn
 
 - **[Bun](https://bun.sh)** - Fast JavaScript runtime and bundler with native Redis support
 - **React 19** - Frontend UI framework
-- **Google Gemini AI** - Question generation and answer validation
+- **Google Gemini 2.5 Flash** - AI-powered question generation and answer validation
 - **[LiteLLM Pricing Data](https://github.com/BerriAI/litellm)** - Accurate API cost tracking using official pricing database
 - **Turndown** - HTML to Markdown conversion
 - **TypeScript** - Type-safe development
@@ -94,10 +94,16 @@ cp .env.example .env
 | `AUTH_USERNAME` | HTTP Basic Auth username | - | No* |
 | `AUTH_PASSWORD` | HTTP Basic Auth password | - | No* |
 | `PORT` | Server port | 3000 | No |
-| `REDIS_URL` | Redis connection URL for cost tracking | - | No |
+| **Redis Configuration** (choose ONE option): ||||
+| `REDIS_URL` | Full Redis connection string | - | No |
+| `REDIS_URI` | Alternative for REDIS_URL | - | No |
+| `REDIS_CONNECTION_STRING` | Alternative for REDIS_URL | - | No |
+| `REDIS_HOST` | Redis hostname (builds URL) | - | No |
+| `REDIS_PORT` | Redis port (with REDIS_HOST) | 6379 | No |
+| `REDIS_PASSWORD` | Redis password (with REDIS_HOST) | - | No |
 | `MAX_API_COST_USD` | Maximum API cost limit in USD | 10.0 | No |
 
-*Auth is automatically disabled when `REDIS_URL` is set (production mode)
+*Auth is automatically disabled when any Redis configuration is set (production mode)
 
 ### Development
 
@@ -146,10 +152,18 @@ brew install redis
 brew services start redis
 ```
 
-2. **Configure Redis URL** in `.env`:
+2. **Configure Redis** in `.env` (choose ONE option):
+
 ```bash
+# Option 1: Full connection string (recommended)
 REDIS_URL=redis://localhost:6379
-MAX_API_COST_USD=10.0  # Set your spending limit
+MAX_API_COST_USD=10.0
+
+# Option 2: Individual components (for platforms that auto-generate these)
+# REDIS_HOST=localhost
+# REDIS_PORT=6379
+# REDIS_PASSWORD=your-password
+# MAX_API_COST_USD=10.0
 ```
 
 3. **Start the server**:
@@ -161,12 +175,15 @@ bun run start
 
 - **Accurate Pricing:** Automatically fetches latest pricing from [LiteLLM's pricing database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
 - **Auto-Update:** Run `bun run scripts/fetch-pricing.ts` to update pricing data
-- **Model Support:** Currently configured for Gemini 2.0 Flash Experimental (free)
+- **Model Support:** Currently using **Gemini 2.5 Flash** for better quality
+  - Gemini 2.5 Flash: $0.30/M input, $2.50/M output tokens (~$0.0065 per quiz)
+  - Gemini 2.5 Pro: $1.25/M input, $10.00/M output tokens
   - Gemini 1.5 Flash: $0.075/M input, $0.30/M output tokens
-  - Gemini 1.5 Pro: $3.50/M input, $10.50/M output tokens
+  - Gemini 2.0 Flash Exp: Free (experimental)
 - **Automatic Blocking:** When the cost limit is reached, the API returns a 429 status code
 - **Statistics Endpoint:** `GET /api/cost-stats` returns current usage
-- **Production Mode:** When `REDIS_URL` is set, HTTP Basic Auth is automatically disabled
+- **Production Mode:** When Redis is configured, HTTP Basic Auth is automatically disabled
+- **Platform Support:** Compatible with Vercel, Railway, Render, Heroku, and other platforms
 
 ### Production Deployment
 

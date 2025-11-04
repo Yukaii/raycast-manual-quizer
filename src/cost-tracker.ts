@@ -12,7 +12,7 @@ const REDIS_KEY_PREFIX = "api_cost:";
 const REDIS_TOTAL_COST_KEY = `${REDIS_KEY_PREFIX}total`;
 
 // Current model being used (from quiz-generator.ts)
-const CURRENT_MODEL = "gemini-2.0-flash-exp";
+const CURRENT_MODEL = "gemini-2.5-flash";
 
 export interface CostTrackingResult {
   allowed: boolean;
@@ -91,15 +91,50 @@ let redisClient: RedisClient | null = null;
 let redisInitialized = false;
 
 /**
+ * Get Redis connection URL from environment variables
+ * Supports multiple common environment variable patterns
+ */
+function getRedisUrl(): string | null {
+  // Priority order for Redis connection strings
+  const urlCandidates = [
+    process.env.REDIS_URL,
+    process.env.REDIS_URI,
+    process.env.REDIS_CONNECTION_STRING,
+  ];
+
+  // Check for full connection strings first
+  for (const url of urlCandidates) {
+    if (url) return url;
+  }
+
+  // Build connection string from individual components
+  const host = process.env.REDIS_HOST;
+  const port = process.env.REDIS_PORT || '6379';
+  const password = process.env.REDIS_PASSWORD;
+
+  if (host) {
+    // Build redis:// URL from components
+    if (password) {
+      return `redis://:${password}@${host}:${port}`;
+    }
+    return `redis://${host}:${port}`;
+  }
+
+  return null;
+}
+
+/**
  * Get the Redis client instance
  * Returns null if Redis is not configured
  */
 function getRedisClient(): RedisClient | null {
-  const redisUrl = process.env.REDIS_URL;
+  const redisUrl = getRedisUrl();
 
   if (!redisUrl) {
     if (!redisInitialized) {
-      console.warn("⚠️  Warning: REDIS_URL not set. Cost tracking is disabled.");
+      console.warn("⚠️  Warning: No Redis configuration found. Cost tracking is disabled.");
+      console.warn("    Set one of: REDIS_URL, REDIS_URI, REDIS_CONNECTION_STRING");
+      console.warn("    Or set: REDIS_HOST (with optional REDIS_PORT, REDIS_PASSWORD)");
       redisInitialized = true;
     }
     return null;
