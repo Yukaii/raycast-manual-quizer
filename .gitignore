@@ -36,3 +36,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 pages
 clean
 clean_content
+
+# Auto-generated pricing data from LiteLLM
+src/model-pricing.json

@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "bun src/server.ts",
-    "dev": "bun --hot src/server.ts"
+    "dev": "bun --hot src/server.ts",
+    "postinstall": "bun run scripts/fetch-pricing.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"

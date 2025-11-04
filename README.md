@@ -42,9 +42,10 @@ The HTML fetcher and cleanup utilities were developed using Raycast AI with Sonn
 
 ## Tech Stack
 
-- **[Bun](https://bun.sh)** - Fast JavaScript runtime and bundler
+- **[Bun](https://bun.sh)** - Fast JavaScript runtime and bundler with native Redis support
 - **React 19** - Frontend UI framework
 - **Google Gemini AI** - Question generation and answer validation
+- **[LiteLLM Pricing Data](https://github.com/BerriAI/litellm)** - Accurate API cost tracking using official pricing database
 - **Turndown** - HTML to Markdown conversion
 - **TypeScript** - Type-safe development
 
@@ -59,6 +60,7 @@ The HTML fetcher and cleanup utilities were developed using Raycast AI with Sonn
 
 - [Bun](https://bun.sh) v1.3.0 or higher
 - Google Gemini API key
+- (Optional) Redis server for API cost tracking in production
 
 ### Installation
 
@@ -73,11 +75,29 @@ cd manual
 bun install
 ```
 
+This will automatically fetch the latest pricing data from [LiteLLM](https://github.com/BerriAI/litellm) via the postinstall script.
+
 3. Set up environment variables:
 ```bash
-# Create a .env file (Bun automatically loads it)
-echo "GOOGLE_GENERATIVE_AI_API_KEY=your-api-key-here" > .env
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env and add your API key
+# GOOGLE_GENERATIVE_AI_API_KEY=your-api-key-here
 ```
+
+**Environment Variables:**
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google Gemini API key | - | Yes |
+| `AUTH_USERNAME` | HTTP Basic Auth username | - | No* |
+| `AUTH_PASSWORD` | HTTP Basic Auth password | - | No* |
+| `PORT` | Server port | 3000 | No |
+| `REDIS_URL` | Redis connection URL for cost tracking | - | No |
+| `MAX_API_COST_USD` | Maximum API cost limit in USD | 10.0 | No |
+
+*Auth is automatically disabled when `REDIS_URL` is set (production mode)
 
 ### Development
 
@@ -87,7 +107,7 @@ Run the development server with hot reload:
 bun run dev
 ```
 
-The application will be available at `http://localhost:3333`
+The application will be available at `http://localhost:3000`
 
 ### Production
 
@@ -97,18 +117,94 @@ Start the production server:
 bun run start
 ```
 
+Or with custom port:
+
+```bash
+PORT=8080 bun run start
+```
+
+## API Cost Tracking
+
+The application includes built-in API cost tracking using Redis to prevent excessive spending on the Google Gemini API.
+
+### Features
+
+- 💰 **Real-time Cost Tracking** - Monitors token usage and calculates costs
+- 🛡️ **Spending Limits** - Automatically blocks requests when limit is reached
+- 📊 **Cost Statistics** - View current usage via `/api/cost-stats` endpoint
+- 🔒 **Production-Ready** - Disables HTTP auth when Redis is configured
+
+### Setup
+
+1. **Start Redis** (if not already running):
+```bash
+# Using Docker
+docker run -d -p 6379:6379 redis:alpine
+
+# Or using Homebrew on macOS
+brew install redis
+brew services start redis
+```
+
+2. **Configure Redis URL** in `.env`:
+```bash
+REDIS_URL=redis://localhost:6379
+MAX_API_COST_USD=10.0  # Set your spending limit
+```
+
+3. **Start the server**:
+```bash
+bun run start
+```
+
+### Cost Tracking Details
+
+- **Accurate Pricing:** Automatically fetches latest pricing from [LiteLLM's pricing database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json)
+- **Auto-Update:** Run `bun run scripts/fetch-pricing.ts` to update pricing data
+- **Model Support:** Currently configured for Gemini 2.0 Flash Experimental (free)
+  - Gemini 1.5 Flash: $0.075/M input, $0.30/M output tokens
+  - Gemini 1.5 Pro: $3.50/M input, $10.50/M output tokens
+- **Automatic Blocking:** When the cost limit is reached, the API returns a 429 status code
+- **Statistics Endpoint:** `GET /api/cost-stats` returns current usage
+- **Production Mode:** When `REDIS_URL` is set, HTTP Basic Auth is automatically disabled
+
+### Production Deployment
+
+In production environments with Redis configured:
+
+```bash
+# Set environment variables
+export REDIS_URL=redis://your-redis-server:6379
+export MAX_API_COST_USD=50.0
+export PORT=8080
+export GOOGLE_GENERATIVE_AI_API_KEY=your-key
+
+# Start the server
+bun run start
+```
+
+The server will automatically:
+- Use the PORT environment variable
+- Disable HTTP Basic Auth (relies on Redis cost limiting)
+- Track all API usage in Redis
+- Block requests that would exceed the cost limit
+
 ## Project Structure
 
 ```
 manual/
 ├── src/
-│   ├── server.ts           # Bun server with API routes
-│   ├── app.tsx             # Main React application
-│   ├── index.html          # HTML entry point
-│   ├── styles.css          # Main application styles
-│   └── bilingual-styles.css # Bilingual typography styles
-├── data/                   # Crawled Raycast manual content
-├── screenshot.png          # Application screenshot
+│   ├── server.ts              # Bun server with API routes
+│   ├── app.tsx                # Main React application
+│   ├── quiz-generator.ts      # AI quiz generation logic
+│   ├── cost-tracker.ts        # Redis-based cost tracking
+│   ├── markdown-reader.ts     # Topic content reader
+│   ├── index.html             # HTML entry point
+│   ├── styles.css             # Main application styles
+│   └── bilingual-styles.css   # Bilingual typography styles
+├── data/                      # Crawled Raycast manual content
+├── screenshots/               # Application screenshots
+├── .env.example               # Environment variables template
 ├── package.json
 └── README.md
 ```
@@ -117,6 +213,7 @@ manual/
 
 - `GET /` - Serves the main application
 - `GET /api/topics` - Returns available quiz topics
+- `GET /api/cost-stats` - Returns API cost tracking statistics (requires auth or Redis)
 - `POST /api/quiz/generate` - Generates a new quiz based on configuration
 - `POST /api/quiz/:quizId/validate` - Validates a single answer
 - `POST /api/quiz/:quizId/submit` - Submits all answers for final scoring

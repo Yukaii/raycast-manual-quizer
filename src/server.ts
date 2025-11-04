@@ -2,6 +2,7 @@ import { getTopics } from "./markdown-reader";
 import { generateQuiz, validateAnswer, type QuizConfig } from "./quiz-generator";
 import indexHtml from "./index.html";
 import { parseArgs } from "util";
+import { getCostStats, recordApiCost, checkCostLimit } from "./cost-tracker";
 
 // HTTP Basic Auth middleware
 function requireAuth(req: Request): Response | null {
@@ -10,6 +11,11 @@ function requireAuth(req: Request): Response | null {
   // Check if AUTH_USERNAME and AUTH_PASSWORD are set
   const requiredUsername = process.env.AUTH_USERNAME;
   const requiredPassword = process.env.AUTH_PASSWORD;
+
+  // Skip auth in production when REDIS_URL is configured (relies on Redis cost limiting instead)
+  if (process.env.REDIS_URL) {
+    return null;
+  }
 
   // Skip auth if credentials are not configured
   if (!requiredUsername || !requiredPassword) {
@@ -87,7 +93,10 @@ Examples:
   process.exit(0);
 }
 
-const port = parseInt(values.port as string, 10);
+// Support PORT environment variable (commonly used in production)
+const portEnv = process.env.PORT;
+const portValue = portEnv || values.port as string;
+const port = parseInt(portValue, 10);
 
 if (isNaN(port) || port < 1 || port > 65535) {
   console.error("❌ Invalid port number. Port must be between 1 and 65535.");
@@ -123,6 +132,26 @@ Bun.serve({
       },
     },
 
+    // Get cost statistics
+    "/api/cost-stats": {
+      GET: async (req) => {
+        // Check authentication
+        const authResponse = requireAuth(req);
+        if (authResponse) return authResponse;
+
+        try {
+          const stats = await getCostStats();
+          return Response.json(stats);
+        } catch (error) {
+          console.error("Error getting cost stats:", error);
+          return Response.json(
+            { error: "Failed to fetch cost statistics" },
+            { status: 500 }
+          );
+        }
+      },
+    },
+
     // Generate a new quiz
     "/api/quiz/generate": {
       POST: async (req) => {
@@ -149,7 +178,38 @@ Bun.serve({
             );
           }
 
+          // Estimate token usage for pre-check (rough estimate)
+          // Average prompt is ~5000 tokens, response ~2000 tokens
+          const estimatedUsage = {
+            inputTokens: 5000,
+            outputTokens: 2000,
+          };
+
+          // Check if we're within cost limits
+          const costCheck = await checkCostLimit(estimatedUsage);
+          if (!costCheck.allowed) {
+            return Response.json(
+              {
+                error: costCheck.error || "API cost limit exceeded",
+                costStats: {
+                  currentCost: costCheck.currentCost,
+                  costLimit: costCheck.costLimit,
+                  remainingBudget: costCheck.remainingBudget,
+                }
+              },
+              { status: 429 } // 429 Too Many Requests
+            );
+          }
+
           const quiz = await generateQuiz(config);
+
+          // Record actual API cost if usage data is available
+          if (quiz.usage) {
+            await recordApiCost({
+              inputTokens: quiz.usage.inputTokens,
+              outputTokens: quiz.usage.outputTokens,
+            });
+          }
 
           // Store quiz for validation later
           quizStore.set(quiz.id, quiz);

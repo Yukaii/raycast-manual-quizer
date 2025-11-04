@@ -31,6 +31,10 @@ export interface Quiz {
   questions: QuizQuestion[];
   config: QuizConfig;
   createdAt: Date;
+  usage?: {
+    inputTokens: number;
+    outputTokens: number;
+  };
 }
 
 /**
@@ -56,7 +60,7 @@ export async function generateQuiz(config: QuizConfig): Promise<Quiz> {
   const prompt = buildQuizPrompt(contentText, config);
 
   // Call Gemini API using Vercel AI SDK
-  const { text } = await generateText({
+  const { text, usage } = await generateText({
     model: google("gemini-2.0-flash-exp"),
     prompt,
     maxTokens: 8192,
@@ -65,11 +69,24 @@ export async function generateQuiz(config: QuizConfig): Promise<Quiz> {
   // Parse the response
   const questions = parseQuizResponse(text, config);
 
+  // Extract usage data with validation
+  // Note: AI SDK returns inputTokens/outputTokens (not promptTokens/completionTokens)
+  let usageData: { inputTokens: number; outputTokens: number } | undefined;
+  if (usage && typeof usage.inputTokens === 'number' && typeof usage.outputTokens === 'number') {
+    usageData = {
+      inputTokens: usage.inputTokens,
+      outputTokens: usage.outputTokens,
+    };
+  } else if (usage) {
+    console.warn("Invalid usage data from API:", usage);
+  }
+
   const quiz: Quiz = {
     id: crypto.randomUUID(),
     questions,
     config,
     createdAt: new Date(),
+    usage: usageData,
   };
 
   return quiz;
