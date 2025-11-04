@@ -71,6 +71,7 @@ function App() {
   const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({});
   const [results, setResults] = useState<QuizResult | null>(null);
   const [error, setError] = useState<string>("");
+  const [showAboutModal, setShowAboutModal] = useState(false);
 
   // Load topics on mount
   useEffect(() => {
@@ -262,6 +263,73 @@ function App() {
     setError("");
   };
 
+  const AboutModal = () => {
+    if (!showAboutModal) return null;
+
+    return (
+      <div className="modal-overlay" onClick={() => setShowAboutModal(false)}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2>About This Project</h2>
+            <button
+              className="modal-close-button"
+              onClick={() => setShowAboutModal(false)}
+            >
+              ×
+            </button>
+          </div>
+          <div className="modal-body">
+            <p>
+              <strong>Raycast 小學堂</strong> is an AI-powered quiz generator designed to help you learn and master Raycast productivity features.
+            </p>
+
+            <h3>How It Works</h3>
+            <ul>
+              <li>Crawls the official Raycast manual website to HTML</li>
+              <li>Converts HTML content to clean markdown format</li>
+              <li>Feeds the structured content to AI (Gemini)</li>
+              <li>Generates personalized quiz questions with bilingual support</li>
+              <li>Provides instant feedback and explanations</li>
+            </ul>
+
+            <h3>Features</h3>
+            <ul>
+              <li>Multiple question types: Multiple Choice, True/False, and Short Answer</li>
+              <li>Adjustable difficulty levels: Easy, Medium, and Hard</li>
+              <li>Topic-based learning from official documentation</li>
+              <li>Bilingual interface (English & Traditional Chinese)</li>
+              <li>Immediate AI-powered feedback on answers</li>
+            </ul>
+
+            <h3>Built With</h3>
+            <ul>
+              <li>Bun - Fast JavaScript runtime and bundler</li>
+              <li>React 19 - Frontend UI framework</li>
+              <li>Google Gemini AI (Sonnet 4.5) - Question generation & validation</li>
+              <li>Claude Code - AI-powered development assistance</li>
+              <li>Raycast AI - Enhanced productivity and workflow</li>
+              <li>Turndown - HTML to Markdown conversion</li>
+            </ul>
+
+            <div className="credits">
+              <p>
+                Content sourced from the official{" "}
+                <a
+                  href="https://manual.raycast.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Raycast Manual
+                </a>
+              </p>
+              <p>Developed with Claude Code & Raycast AI</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (state === "loading") {
     return (
       <div className="container">
@@ -275,11 +343,19 @@ function App() {
 
   if (state === "setup") {
     return (
-      <div className="container">
-        <header>
-          <h1>📚 Raycast 小學堂</h1>
-          <p>Test your knowledge with AI-generated questions</p>
-        </header>
+      <>
+        <div className="container">
+          <button
+            className="about-button"
+            onClick={() => setShowAboutModal(true)}
+            title="About this project"
+          >
+            ℹ️
+          </button>
+          <header>
+            <h1>📚 Raycast 小學堂</h1>
+            <p>Test your knowledge with AI-generated questions</p>
+          </header>
 
         {error && <div className="error">{error}</div>}
 
@@ -370,6 +446,8 @@ function App() {
           Generate Quiz with AI
         </button>
       </div>
+      <AboutModal />
+    </>
     );
   }
 

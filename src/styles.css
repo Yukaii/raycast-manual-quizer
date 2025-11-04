@@ -20,6 +20,7 @@ body {
   padding: 50px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
 }
 
 header {
@@ -616,4 +617,165 @@ header p {
   border-top: 1.5px solid rgba(255, 255, 255, 0.1);
   font-style: italic;
   color: rgba(255, 255, 255, 0.7);
+}
+
+/* About Modal Styles */
+.about-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.about-button:hover {
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8888;
+  transform: scale(1.1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: #1a1a1a;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #ff4a8b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.modal-close-button {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-close-button:hover {
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8888;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.7;
+}
+
+.modal-body h3 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-top: 25px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.modal-body p {
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.modal-body ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.modal-body li {
+  margin-bottom: 8px;
+}
+
+.modal-body a {
+  color: #ff8888;
+  text-decoration: none;
+  transition: all 0.2s;
+  border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.modal-body a:hover {
+  color: #ff6b6b;
+  border-bottom-color: #ff6b6b;
+}
+
+.credits {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.credits p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.credits a {
+  color: #ff8888;
+  font-weight: 500;
 }

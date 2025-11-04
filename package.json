@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "quiz": "bun --hot src/server.ts",
+    "start": "bun src/server.ts",
     "dev": "bun --hot src/server.ts"
   },
   "devDependencies": {
