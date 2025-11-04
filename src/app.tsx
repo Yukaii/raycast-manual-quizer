@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
+import "./bilingual-styles.css";
 
 type QuestionType = "multiple-choice" | "true-false" | "short-answer";
 type Difficulty = "easy" | "medium" | "hard";
@@ -15,7 +16,9 @@ interface Question {
   id: string;
   type: QuestionType;
   question: string;
+  questionZh: string;
   options?: string[];
+  optionsZh?: string[];
   topic: string;
   difficulty: Difficulty;
 }
@@ -65,6 +68,7 @@ function App() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [currentFeedback, setCurrentFeedback] = useState<QuestionFeedback | null>(null);
   const [questionResults, setQuestionResults] = useState<Record<string, QuestionFeedback>>({});
+  const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({});
   const [results, setResults] = useState<QuizResult | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -129,6 +133,7 @@ function App() {
       setCurrentAnswer("");
       setShowFeedback(false);
       setQuestionResults({});
+      setAttemptCounts({});
       setState("quiz");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate quiz");
@@ -152,13 +157,28 @@ function App() {
       });
 
       const feedback = await response.json();
+
+      // Increment attempt count
+      const currentAttempts = attemptCounts[question.id] || 0;
+      setAttemptCounts({ ...attemptCounts, [question.id]: currentAttempts + 1 });
+
       setCurrentFeedback(feedback);
       setShowFeedback(true);
-      setAnswers({ ...answers, [question.id]: currentAnswer });
-      setQuestionResults({ ...questionResults, [question.id]: feedback });
+
+      // Only save the answer and result if correct
+      if (feedback.isCorrect) {
+        setAnswers({ ...answers, [question.id]: currentAnswer });
+        setQuestionResults({ ...questionResults, [question.id]: feedback });
+      }
     } catch (err) {
       setError("Failed to validate answer");
     }
+  };
+
+  const tryAgain = () => {
+    setCurrentAnswer("");
+    setShowFeedback(false);
+    setCurrentFeedback(null);
   };
 
   const nextQuestion = () => {
@@ -207,6 +227,7 @@ function App() {
     setCurrentAnswer("");
     setShowFeedback(false);
     setQuestionResults({});
+    setAttemptCounts({});
     setResults(null);
     setCurrentQuestionIndex(0);
     setError("");
@@ -347,9 +368,12 @@ function App() {
             <span className="badge">{question.type}</span>
           </div>
 
-          <h3>{question.question}</h3>
+          <div className="bilingual-question">
+            <h3 className="question-zh">{question.questionZh}</h3>
+            <h3 className="question-en">{question.question}</h3>
+          </div>
 
-          {!showFeedback && question.type === "multiple-choice" && question.options && (
+          {!showFeedback && question.type === "multiple-choice" && question.options && question.optionsZh && (
             <div className="options">
               {question.options.map((option, idx) => (
                 <button
@@ -357,7 +381,8 @@ function App() {
                   className={`option-button ${currentAnswer === option ? "selected" : ""}`}
                   onClick={() => setCurrentAnswer(option)}
                 >
-                  {option}
+                  <div className="option-zh">{question.optionsZh[idx]}</div>
+                  <div className="option-en">{option}</div>
                 </button>
               ))}
             </div>
@@ -365,13 +390,17 @@ function App() {
 
           {!showFeedback && question.type === "true-false" && (
             <div className="options">
-              {["True", "False"].map((option) => (
+              {[
+                { en: "True", zh: "正確" },
+                { en: "False", zh: "錯誤" }
+              ].map((option) => (
                 <button
-                  key={option}
-                  className={`option-button ${currentAnswer === option ? "selected" : ""}`}
-                  onClick={() => setCurrentAnswer(option)}
+                  key={option.en}
+                  className={`option-button ${currentAnswer === option.en ? "selected" : ""}`}
+                  onClick={() => setCurrentAnswer(option.en)}
                 >
-                  {option}
+                  <div className="option-zh">{option.zh}</div>
+                  <div className="option-en">{option.en}</div>
                 </button>
               ))}
             </div>
@@ -381,7 +410,7 @@ function App() {
             <input
               type="text"
               className="answer-input"
-              placeholder="Type your answer..."
+              placeholder="輸入你的答案 / Type your answer..."
               value={currentAnswer}
               onChange={(e) => setCurrentAnswer(e.target.value)}
             />
@@ -391,17 +420,31 @@ function App() {
             <div className={`feedback-card ${currentFeedback.isCorrect ? "correct" : "incorrect"}`}>
               <div className="feedback-header">
                 <span className={`feedback-badge ${currentFeedback.isCorrect ? "correct" : "incorrect"}`}>
-                  {currentFeedback.isCorrect ? "✓ Correct!" : "✗ Incorrect"}
+                  {currentFeedback.isCorrect ? "✓ 正確！Correct!" : "✗ 錯誤 Incorrect"}
                 </span>
+                {attemptCounts[question.id] > 0 && (
+                  <span className="attempt-counter">
+                    嘗試 {attemptCounts[question.id]} 次 • Attempt {attemptCounts[question.id]}
+                  </span>
+                )}
               </div>
               <div className="feedback-content">
-                <p><strong>Your answer:</strong> {currentAnswer}</p>
-                {!currentFeedback.isCorrect && (
-                  <p><strong>Correct answer:</strong> {currentFeedback.correctAnswer}</p>
+                {currentFeedback.isCorrect ? (
+                  <>
+                    <p><strong>你的答案 Your answer:</strong> {currentAnswer}</p>
+                    <p className="explanation">
+                      <strong>說明 Explanation:</strong> {currentFeedback.explanation}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="try-again-message">
+                      <strong>❌ 不正確！讓其他人試試看</strong><br />
+                      <strong>Not correct! Let someone else try</strong>
+                    </p>
+                    <p className="incorrect-answer"><strong>答案：</strong> {currentAnswer}</p>
+                  </>
                 )}
-                <p className="explanation">
-                  <strong>Explanation:</strong> {currentFeedback.explanation}
-                </p>
               </div>
             </div>
           )}
@@ -414,11 +457,15 @@ function App() {
               onClick={submitAnswer}
               disabled={!currentAnswer.trim()}
             >
-              Submit Answer
+              提交答案 Submit Answer
+            </button>
+          ) : currentFeedback?.isCorrect ? (
+            <button className="submit-button" onClick={nextQuestion}>
+              {currentQuestionIndex < quiz.questions.length - 1 ? "下一題 Next Question →" : "查看結果 View Results"}
             </button>
           ) : (
-            <button className="submit-button" onClick={nextQuestion}>
-              {currentQuestionIndex < quiz.questions.length - 1 ? "Next Question →" : "View Results"}
+            <button className="try-again-button" onClick={tryAgain}>
+              讓其他人試試 Let Someone Else Try
             </button>
           )}
         </div>

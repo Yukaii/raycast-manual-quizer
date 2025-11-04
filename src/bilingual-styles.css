@@ -1,0 +1,119 @@
+/* Bilingual Question and Options Styles */
+.bilingual-question {
+  margin-bottom: 30px;
+}
+
+.question-zh {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: #ffffff;
+  line-height: 1.7;
+  font-weight: 600;
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+}
+
+.question-en {
+  font-size: 1.2rem;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.option-button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 22px;
+}
+
+.option-zh {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: inherit;
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  line-height: 1.5;
+}
+
+.option-en {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  color: inherit;
+  line-height: 1.4;
+}
+
+.option-button.selected .option-zh,
+.option-button.selected .option-en {
+  color: white;
+  opacity: 1;
+}
+
+.option-button:hover .option-zh,
+.option-button:hover .option-en {
+  opacity: 1;
+}
+
+/* Feedback display improvements for bilingual */
+.feedback-content {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+}
+
+/* Results display for bilingual questions */
+.result-card h3 {
+  font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+}
+
+/* Attempt counter */
+.attempt-counter {
+  margin-left: 15px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Try again message */
+.try-again-message {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.try-again-message strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.incorrect-answer {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Try again button */
+.try-again-button {
+  flex: 1;
+  padding: 16px;
+  background: rgba(255, 165, 0, 0.2);
+  border: 1.5px solid rgba(255, 165, 0, 0.5);
+  color: #ffb347;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.try-again-button:hover {
+  background: rgba(255, 165, 0, 0.3);
+  border-color: rgba(255, 165, 0, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 165, 0, 0.3);
+}

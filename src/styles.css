@@ -5,49 +5,53 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  background: #0a0a0a;
   min-height: 100vh;
   padding: 20px;
-  color: #333;
+  color: #ffffff;
 }
 
 .container {
   max-width: 900px;
   margin: 0 auto;
-  background: white;
-  border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: #1a1a1a;
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 }
 
 header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 3rem;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #ff4a8b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 header p {
-  color: #666;
-  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
 .error {
-  background: #fee;
-  color: #c33;
-  padding: 15px;
-  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ff6b6b;
+  padding: 16px 20px;
+  border-radius: 12px;
   margin-bottom: 20px;
-  border: 1px solid #fcc;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  font-size: 0.95rem;
 }
 
 .loading {
@@ -58,8 +62,8 @@ header p {
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #ff6b6b;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -81,7 +85,8 @@ header p {
 .setup-section h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .topic-grid {
@@ -92,25 +97,28 @@ header p {
 }
 
 .topic-button {
-  padding: 12px 16px;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   font-size: 0.9rem;
   text-align: left;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .topic-button:hover {
-  border-color: #667eea;
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.1);
   transform: translateY(-2px);
 }
 
 .topic-button.selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
   border-color: transparent;
+  font-weight: 500;
 }
 
 .quick-actions {
@@ -120,16 +128,18 @@ header p {
 
 .quick-actions button {
   padding: 8px 16px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .quick-actions button:hover {
-  background: #f5f5f5;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .config-group {
@@ -140,16 +150,26 @@ header p {
   display: block;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #333;
+  color: #ffffff;
+  font-size: 0.95rem;
 }
 
 .config-group input[type="number"] {
   width: 100%;
-  padding: 10px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
   font-size: 1rem;
   margin-top: 5px;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.config-group input[type="number"]:focus {
+  outline: none;
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .button-group {
@@ -160,20 +180,22 @@ header p {
 .button-group button {
   flex: 1;
   padding: 12px 20px;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .button-group button:hover {
-  border-color: #667eea;
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.1);
 }
 
 .button-group button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
   border-color: transparent;
 }
@@ -189,31 +211,35 @@ header p {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
 }
 
 .checkbox-group input[type="checkbox"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
+  accent-color: #ff6b6b;
 }
 
 .start-button {
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 18px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   margin-top: 20px;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
 }
 
 .start-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
 }
 
 .quiz-header {
@@ -221,48 +247,61 @@ header p {
   margin-bottom: 30px;
 }
 
+.quiz-header h2 {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.quiz-header p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 10px;
+}
+
 .progress-bar {
   width: 100%;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
   margin: 20px 0;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  transition: width 0.3s;
+  background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+  transition: width 0.3s ease;
 }
 
 .question-card {
-  background: #f9f9f9;
-  padding: 30px;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 35px;
+  border-radius: 16px;
   margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .question-meta {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .badge {
-  padding: 6px 12px;
-  background: #667eea;
-  color: white;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 6px 14px;
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff8888;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 500;
+  border: 1px solid rgba(255, 107, 107, 0.2);
 }
 
 .question-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  color: #333;
-  line-height: 1.5;
+  font-size: 1.4rem;
+  margin-bottom: 25px;
+  color: #ffffff;
+  line-height: 1.6;
+  font-weight: 600;
 }
 
 .options {
@@ -272,38 +311,49 @@ header p {
 }
 
 .option-button {
-  padding: 16px 20px;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 8px;
+  padding: 16px 22px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .option-button:hover {
-  border-color: #667eea;
-  transform: translateX(5px);
+  border-color: rgba(255, 107, 107, 0.4);
+  background: rgba(255, 107, 107, 0.08);
+  transform: translateX(4px);
 }
 
 .option-button.selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
   border-color: transparent;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 }
 
 .answer-input {
   width: 100%;
-  padding: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   font-size: 1rem;
+  color: #ffffff;
+  transition: all 0.2s;
 }
 
 .answer-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.answer-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .quiz-navigation {
@@ -314,20 +364,20 @@ header p {
 
 .quiz-navigation button {
   flex: 1;
-  padding: 14px;
-  border: 2px solid #667eea;
-  background: white;
-  color: #667eea;
-  border-radius: 8px;
+  padding: 16px;
+  border: 1.5px solid rgba(255, 107, 107, 0.3);
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8888;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .quiz-navigation button:hover:not(:disabled) {
-  background: #667eea;
-  color: white;
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.5);
 }
 
 .quiz-navigation button:disabled {
@@ -336,9 +386,15 @@ header p {
 }
 
 .quiz-navigation .submit-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
   border: none;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+}
+
+.quiz-navigation .submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
 }
 
 .results-header {
@@ -349,25 +405,28 @@ header p {
 .results-header h1 {
   font-size: 2rem;
   margin-bottom: 30px;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .score-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
-  padding: 40px;
-  border-radius: 16px;
+  padding: 50px;
+  border-radius: 20px;
   margin-bottom: 40px;
+  box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
 }
 
 .score-circle {
-  width: 150px;
-  height: 150px;
-  border: 8px solid rgba(255, 255, 255, 0.3);
+  width: 160px;
+  height: 160px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 25px;
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -389,19 +448,20 @@ header p {
 }
 
 .result-card {
-  padding: 25px;
-  border-radius: 12px;
-  border: 2px solid #e0e0e0;
+  padding: 25px 30px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .result-card.correct {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(134, 239, 172, 0.3);
 }
 
 .result-card.incorrect {
-  background: #fef2f2;
-  border-color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(252, 165, 165, 0.3);
 }
 
 .result-header {
@@ -413,12 +473,12 @@ header p {
 
 .result-number {
   font-weight: bold;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .result-badge {
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -436,34 +496,42 @@ header p {
 .result-card h3 {
   font-size: 1.1rem;
   margin-bottom: 15px;
-  color: #333;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .result-answers p {
-  margin: 10px 0;
-  line-height: 1.6;
+  margin: 12px 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.result-answers strong {
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .explanation {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #e0e0e0;
-  color: #666;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
 
 /* Immediate Feedback Styles */
 .feedback-card {
   margin-top: 30px;
-  padding: 25px;
-  border-radius: 12px;
-  animation: fadeIn 0.3s ease-in;
+  padding: 30px;
+  border-radius: 16px;
+  animation: fadeIn 0.4s ease-out;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-15px);
   }
   to {
     opacity: 1;
@@ -472,52 +540,55 @@ header p {
 }
 
 .feedback-card.correct {
-  background: #f0fdf4;
-  border: 2px solid #86efac;
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(134, 239, 172, 0.3);
 }
 
 .feedback-card.incorrect {
-  background: #fef2f2;
-  border: 2px solid #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(252, 165, 165, 0.3);
 }
 
 .feedback-header {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .feedback-badge {
   display: inline-block;
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: 10px 24px;
+  border-radius: 10px;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .feedback-badge.correct {
   background: #22c55e;
   color: white;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
 }
 
 .feedback-badge.incorrect {
   background: #ef4444;
   color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .feedback-content p {
   margin: 15px 0;
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.feedback-content strong {
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .feedback-content .explanation {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid rgba(0, 0, 0, 0.1);
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.1);
   font-style: italic;
-  color: #555;
-}
-
-.quiz-navigation button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.7);
 }

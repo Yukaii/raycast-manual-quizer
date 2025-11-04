@@ -9,8 +9,11 @@ export interface QuizQuestion {
   id: string;
   type: QuestionType;
   question: string;
-  options?: string[]; // For multiple-choice
+  questionZh: string; // Traditional Chinese
+  options?: string[]; // For multiple-choice (English)
+  optionsZh?: string[]; // For multiple-choice (Traditional Chinese)
   correctAnswer: string;
+  correctAnswerZh?: string;
   explanation: string;
   topic: string;
   difficulty: Difficulty;
@@ -89,7 +92,7 @@ function buildQuizPrompt(content: string, config: QuizConfig): string {
     })
     .join(", ");
 
-  return `You are a quiz generator. Based on the following documentation content, generate ${config.numberOfQuestions} quiz questions.
+  return `You are a bilingual quiz generator for a Duolingo-style meetup. Based on the following documentation content, generate ${config.numberOfQuestions} quiz questions in BOTH Traditional Chinese (繁體中文) and English.
 
 Requirements:
 - Difficulty level: ${config.difficulty}
@@ -108,26 +111,37 @@ Requirements:
 Documentation Content:
 ${content.substring(0, 20000)} ${content.length > 20000 ? "\n\n[Content truncated for length...]" : ""}
 
-Return your response as a JSON array of question objects. Each question should have:
+Return your response as a JSON array of question objects. Each question MUST have both English and Traditional Chinese versions:
 {
   "type": "multiple-choice" | "true-false" | "short-answer",
-  "question": "The question text",
-  "options": ["A", "B", "C", "D"] (only for multiple-choice),
-  "correctAnswer": "The correct answer",
-  "explanation": "A brief explanation of why this is correct",
+  "question": "The question text in English",
+  "questionZh": "問題的繁體中文版本",
+  "options": ["Option A in English", "Option B in English", "Option C in English", "Option D in English"] (only for multiple-choice),
+  "optionsZh": ["選項 A 的繁體中文", "選項 B 的繁體中文", "選項 C 的繁體中文", "選項 D 的繁體中文"] (only for multiple-choice),
+  "correctAnswer": "The correct answer in English",
+  "correctAnswerZh": "正確答案的繁體中文版本",
+  "explanation": "A brief explanation in English",
   "topic": "Which topic this question is from"
 }
 
+IMPORTANT:
+- ALL questions and options must be provided in BOTH English and Traditional Chinese
+- Use proper Traditional Chinese characters (繁體中文), NOT Simplified Chinese
+- Translate technical terms appropriately (e.g., "Raycast" → "Raycast")
+- Keep technical product names in English in both versions
+
 For multiple-choice questions:
-- Provide 4 options as an array
-- correctAnswer should be one of the options exactly
+- Provide 4 options as an array in both languages
+- correctAnswer should be one of the English options exactly
+- correctAnswerZh should be the corresponding Chinese option
 
 For true-false questions:
 - correctAnswer should be "True" or "False"
+- correctAnswerZh should be "正確" or "錯誤"
 
 For short-answer questions:
-- correctAnswer should be a concise answer (1-3 words)
-- Accept variations in explanation
+- correctAnswer should be a concise answer in English (1-3 words)
+- correctAnswerZh should be the Chinese translation
 
 Return ONLY the JSON array, no additional text.`;
 }
@@ -152,8 +166,11 @@ function parseQuizResponse(
       id: `q${index + 1}`,
       type: q.type,
       question: q.question,
+      questionZh: q.questionZh,
       options: q.options,
+      optionsZh: q.optionsZh,
       correctAnswer: q.correctAnswer,
+      correctAnswerZh: q.correctAnswerZh,
       explanation: q.explanation,
       topic: q.topic,
       difficulty: config.difficulty,
