@@ -397,6 +397,31 @@ header p {
   box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4);
 }
 
+.quiz-navigation .skip-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  flex: 0.5;
+}
+
+.quiz-navigation .skip-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateX(2px);
+}
+
+.quiz-navigation .try-again-button {
+  background: rgba(255, 165, 0, 0.15);
+  border-color: rgba(255, 165, 0, 0.3);
+  color: #ffb366;
+}
+
+.quiz-navigation .try-again-button:hover {
+  background: rgba(255, 165, 0, 0.25);
+  border-color: rgba(255, 165, 0, 0.5);
+}
+
 .results-header {
   text-align: center;
   margin-bottom: 40px;

@@ -1,12 +1,56 @@
 import { getTopics } from "./markdown-reader";
 import { generateQuiz, validateAnswer, type QuizConfig } from "./quiz-generator";
 import indexHtml from "./index.html";
+import { parseArgs } from "util";
+
+// Parse command-line arguments
+const { values } = parseArgs({
+  args: Bun.argv.slice(2),
+  options: {
+    port: {
+      type: "string",
+      short: "p",
+      default: "3000",
+    },
+    help: {
+      type: "boolean",
+      short: "h",
+      default: false,
+    },
+  },
+  allowPositionals: true,
+});
+
+if (values.help) {
+  console.log(`
+Raycast 小學堂 - Quiz Generator Server
+
+Usage: bun src/server.ts [options]
+
+Options:
+  -p, --port <number>    Port to listen on (default: 3000)
+  -h, --help            Show this help message
+
+Examples:
+  bun src/server.ts
+  bun src/server.ts --port 8080
+  bun src/server.ts -p 4000
+  `);
+  process.exit(0);
+}
+
+const port = parseInt(values.port as string, 10);
+
+if (isNaN(port) || port < 1 || port > 65535) {
+  console.error("❌ Invalid port number. Port must be between 1 and 65535.");
+  process.exit(1);
+}
 
 // Store active quizzes in memory (in production, use a database)
 const quizStore = new Map();
 
 Bun.serve({
-  port: 3000,
+  port,
   routes: {
     // Serve the main UI
     "/": indexHtml,
@@ -171,5 +215,5 @@ Bun.serve({
   },
 });
 
-console.log(`🚀 Quiz Generator running at http://localhost:3000`);
+console.log(`🚀 Quiz Generator running at http://localhost:${port}`);
 console.log(`📚 Make sure GOOGLE_GENERATIVE_AI_API_KEY is set in your .env file`);

@@ -181,6 +181,35 @@ function App() {
     setCurrentFeedback(null);
   };
 
+  const skipQuestion = () => {
+    if (!quiz) return;
+
+    const question = quiz.questions[currentQuestionIndex];
+
+    // Mark as skipped by saving an empty result
+    if (!questionResults[question.id]) {
+      setQuestionResults({
+        ...questionResults,
+        [question.id]: {
+          isCorrect: false,
+          correctAnswer: "",
+          explanation: "Question was skipped"
+        }
+      });
+    }
+
+    // Move to next question
+    if (currentQuestionIndex < quiz.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentAnswer("");
+      setShowFeedback(false);
+      setCurrentFeedback(null);
+    } else {
+      // Quiz complete, calculate final results
+      finishQuiz();
+    }
+  };
+
   const nextQuestion = () => {
     if (!quiz) return;
 
@@ -248,7 +277,7 @@ function App() {
     return (
       <div className="container">
         <header>
-          <h1>📚 Raycast Documentation Quiz</h1>
+          <h1>📚 Raycast 小學堂</h1>
           <p>Test your knowledge with AI-generated questions</p>
         </header>
 
@@ -452,21 +481,31 @@ function App() {
 
         <div className="quiz-navigation">
           {!showFeedback ? (
-            <button
-              className="submit-button"
-              onClick={submitAnswer}
-              disabled={!currentAnswer.trim()}
-            >
-              提交答案 Submit Answer
-            </button>
+            <>
+              <button
+                className="submit-button"
+                onClick={submitAnswer}
+                disabled={!currentAnswer.trim()}
+              >
+                提交答案 Submit Answer
+              </button>
+              <button className="skip-button" onClick={skipQuestion}>
+                跳過 Skip →
+              </button>
+            </>
           ) : currentFeedback?.isCorrect ? (
             <button className="submit-button" onClick={nextQuestion}>
               {currentQuestionIndex < quiz.questions.length - 1 ? "下一題 Next Question →" : "查看結果 View Results"}
             </button>
           ) : (
-            <button className="try-again-button" onClick={tryAgain}>
-              讓其他人試試 Let Someone Else Try
-            </button>
+            <>
+              <button className="try-again-button" onClick={tryAgain}>
+                讓其他人試試 Let Someone Else Try
+              </button>
+              <button className="skip-button" onClick={skipQuestion}>
+                跳過 Skip →
+              </button>
+            </>
           )}
         </div>
       </div>
