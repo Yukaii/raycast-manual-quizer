@@ -2,9 +2,24 @@
 
 An AI-powered quiz generator for learning Raycast productivity features. This application crawls the official Raycast manual, converts it to structured markdown, and uses Google Gemini AI to generate personalized bilingual quiz questions.
 
-## Screenshot
+## Screenshots
 
-![Raycast Quiz App](screenshot.png)
+### Application Interface
+
+![Raycast Quiz App](screenshots/app-interface.png)
+
+### Development Process with Raycast AI
+
+The HTML fetcher and cleanup utilities were developed using Raycast AI with Sonnet 4.5:
+
+![Raycast AI - HTML Fetcher Development](screenshots/raycast-ai-conversation-1.png)
+*Vibe coding the HTML fetcher with Raycast AI*
+
+![Raycast AI - HTML Cleanup Part 1](screenshots/raycast-ai-conversation-2.png)
+*Developing HTML cleanup logic*
+
+![Raycast AI - HTML Cleanup Part 2](screenshots/raycast-ai-conversation-3.png)
+*Refining the HTML to Markdown conversion process*
 
 ## Features
 
