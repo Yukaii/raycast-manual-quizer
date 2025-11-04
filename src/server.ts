@@ -3,6 +3,54 @@ import { generateQuiz, validateAnswer, type QuizConfig } from "./quiz-generator"
 import indexHtml from "./index.html";
 import { parseArgs } from "util";
 
+// HTTP Basic Auth middleware
+function requireAuth(req: Request): Response | null {
+  const authHeader = req.headers.get("Authorization");
+
+  // Check if AUTH_USERNAME and AUTH_PASSWORD are set
+  const requiredUsername = process.env.AUTH_USERNAME;
+  const requiredPassword = process.env.AUTH_PASSWORD;
+
+  // Skip auth if credentials are not configured
+  if (!requiredUsername || !requiredPassword) {
+    console.warn("⚠️  Warning: AUTH_USERNAME and AUTH_PASSWORD not set. API endpoints are unprotected!");
+    return null;
+  }
+
+  if (!authHeader || !authHeader.startsWith("Basic ")) {
+    return new Response("Unauthorized", {
+      status: 401,
+      headers: {
+        "WWW-Authenticate": 'Basic realm="Quiz API"',
+      },
+    });
+  }
+
+  try {
+    // Decode the base64 credentials
+    const base64Credentials = authHeader.slice(6);
+    const credentials = atob(base64Credentials);
+    const [username, password] = credentials.split(":");
+
+    // Verify credentials
+    if (username !== requiredUsername || password !== requiredPassword) {
+      return new Response("Unauthorized", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Quiz API"',
+        },
+      });
+    }
+
+    // Authentication successful
+    return null;
+  } catch (error) {
+    return new Response("Bad Request", {
+      status: 400,
+    });
+  }
+}
+
 // Parse command-line arguments
 const { values } = parseArgs({
   args: Bun.argv.slice(2),
@@ -57,7 +105,11 @@ Bun.serve({
 
     // Get all available topics
     "/api/topics": {
-      GET: async () => {
+      GET: async (req) => {
+        // Check authentication
+        const authResponse = requireAuth(req);
+        if (authResponse) return authResponse;
+
         try {
           const topics = await getTopics();
           return Response.json({ topics });
@@ -74,6 +126,10 @@ Bun.serve({
     // Generate a new quiz
     "/api/quiz/generate": {
       POST: async (req) => {
+        // Check authentication
+        const authResponse = requireAuth(req);
+        if (authResponse) return authResponse;
+
         try {
           const body = await req.json();
           const config: QuizConfig = {
@@ -133,6 +189,10 @@ Bun.serve({
     // Validate a single answer
     "/api/quiz/:quizId/validate": {
       POST: async (req) => {
+        // Check authentication
+        const authResponse = requireAuth(req);
+        if (authResponse) return authResponse;
+
         try {
           const quizId = req.params.quizId;
           const quiz = quizStore.get(quizId);
@@ -164,6 +224,10 @@ Bun.serve({
     // Submit quiz answers and get results
     "/api/quiz/:quizId/submit": {
       POST: async (req) => {
+        // Check authentication
+        const authResponse = requireAuth(req);
+        if (authResponse) return authResponse;
+
         try {
           const quizId = req.params.quizId;
           const quiz = quizStore.get(quizId);
